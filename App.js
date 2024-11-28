@@ -11,27 +11,25 @@
 
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, ActivityIndicator, Button } from 'react-native';
-import console from 'console';
 
 const ItemList = () => {
   const [items, setItems] = useState(null);
   const [loading, setLoading] = useState(true);
-  
+
   const [page, setPage] = useState(1);
-  
+
   const PAGE_LIMIT = 4;
 
   useEffect(() => {
     fetchItems();
-
-  }, [items]);
+  }, [page]);
 
   const fetchItems = async () => {
     try {
       const response = await fetch(`https://rickandmortyapi.com/api/character?page=${page}`);
-      const data = response.json();
-      
-      setItems(data.results);
+      const data = await response.json();
+
+      setItems((prevItems) => (prevItems ? [...prevItems, ...data.results] : data.results));
     } catch (error) {
       console.error('Error al obtener los elementos:', error);
     } finally {
@@ -40,14 +38,14 @@ const ItemList = () => {
   };
 
   const renderItem = ({ item }) => {
-    return items.map((itm) => (
+    return (
       <View
-        key={itm.id}
+        key={item.id}
         style={{ padding: 20, borderBottomWidth: 1, borderBottomColor: '#ccc' }}
       >
-        <Text>{itm.name}</Text>
+        <Text>{item.name}</Text>
       </View>
-    ));
+    );
   };
 
   const handleLoadMore = () => {
@@ -59,7 +57,10 @@ const ItemList = () => {
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator
+          size="large"
+          color="#0000ff"
+        />
       </View>
     );
   }
@@ -72,10 +73,12 @@ const ItemList = () => {
         keyExtractor={(item) => item.id}
         onEndReached={handleLoadMore}
         onEndReachedThreshold={0.5}
-        
         ListFooterComponent={
           page < PAGE_LIMIT && (
-            <Button title="Cargar Más" onPress={handleLoadMore} />
+            <Button
+              title="Cargar Más"
+              onPress={handleLoadMore}
+            />
           )
         }
       />

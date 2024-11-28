@@ -1,11 +1,44 @@
-# Sample Snack app
+# Prueba tecnica
 
-Open the `App.js` file to start writing some code. You can preview the changes directly on your phone or tablet by scanning the **QR code** or use the iOS or Android emulators. When you're done, click **Save** and share the link!
+=========================
 
-When you're ready to see everything that Expo provides (or if you want to use your own editor) you can **Download** your project and use it with [expo cli](https://docs.expo.dev/get-started/installation/#expo-cli)).
+## Eliminación de la Importación de la Consola
 
-All projects created in Snack are publicly available, so you can easily share the link to this project via link, or embed it on a web page with the `<>` button.
+---
 
-If you're having problems, you can tweet to us [@expo](https://twitter.com/expo) or ask in our [forums](https://forums.expo.dev/c/expo-dev-tools/61) or [Discord](https://chat.expo.dev/).
+- Se eliminó la línea `import console from 'console';` ya que la consola es un objeto nativo de JavaScript.
+- Resultado: El código es más limpio y no se importa una dependencia innecesaria.
 
-Snack is Open Source. You can find the code on the [GitHub repo](https://github.com/expo/snack).
+## Corrección del Efecto `useEffect`
+
+---
+
+- Se cambió la línea `useEffect(() => { fetchItems(); }, [items]);` por `useEffect(() => { fetchItems(); }, [page]);` para evitar un bucle infinito.
+- Resultado: El efecto `useEffect` se ejecuta solo cuando cambia la página `page`, evitando un bucle infinito.
+
+## Mejora de la Función `renderItem`
+
+---
+
+- Se cambió la línea `return items.map((itm) => (` por `return (<View key={item.id} style={{ padding: 20, borderBottomWidth: 1, borderBottomColor: '#ccc' }}><Text>{item.name}</Text></View>);` para evitar la redenrización de toda la lista de ítems.
+- Resultado: La función `renderItem` solo redenriza el ítem que le pertenece, evitando la duplicidad de datos.
+
+## Corrección de la Lectura de la Respuesta JSON
+
+---
+
+- Se agregó el `await` en la línea `const data = await response.json();` para esperar a que la promesa se resuelva y obtener la data correcta.
+- Resultado: La data se lee correctamente y se puede utilizar en la aplicación.
+
+## Mejora en la Actualización del Estado
+
+---
+
+- Se cambió la línea `setItems(data.results);` por `setItems((prevItems) => (prevItems ? [...prevItems, ...data.results] : data.results));` para mantener el estado anterior y agregar los nuevos datos.
+- Resultado: El estado se actualiza correctamente y se mantienen los datos anteriores.
+
+## Listado del fetch en el emulador android
+
+---
+
+![Imagen](assets/resultadoFinal.png)
